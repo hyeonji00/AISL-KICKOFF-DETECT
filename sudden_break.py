@@ -55,7 +55,10 @@ az=gyro_list[6]
 #if kick_change_speed > 10 and ax < -5.5:
 
 
+# 특정 사용자의 누적벌점 & 급제동 누적벌점 put으로 수정
+
 if float(ax) < -5.5:  # ax 값 테스트
+    
     print('warning')
 else:
     print('normal')

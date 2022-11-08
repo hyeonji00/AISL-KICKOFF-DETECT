@@ -131,6 +131,9 @@ while True:
     #if distance_min < float(10/1000):  #방지턱과의 거리가 10m
         
         #z축 수집
+
+# 특정 사용자의 누적벌점 & 방지턱 과속 누적벌점 put으로 수정
+    
     if float(az) > 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
         print("warning")
         a=a+1

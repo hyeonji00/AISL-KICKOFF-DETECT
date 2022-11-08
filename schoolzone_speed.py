@@ -76,6 +76,10 @@ while True:
 
     distance_0=lat_long_dist(kick_lat,kick_lon,school_lat_1,school_lon_1)
 
+
+
+# 특정 사용자의 누적벌점 & 보호구역 과속 누적벌점 put으로 수정
+
     print(distance_0)
     if distance_0 < float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
         if float(kick_speed) > float(15):   # 킥보드의 속도 15 km/h 보다 
