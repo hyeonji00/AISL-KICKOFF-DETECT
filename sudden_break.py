@@ -4,6 +4,7 @@
 
 import requests
 
+url1 = "http://203.253.128.161:7579/Mobius/kick/gps/la"
 url2 = "http://203.253.128.161:7579/Mobius/kick/gyro/la"
 
 kick_id="MFBE29"
@@ -29,7 +30,11 @@ def getdata(url):
                 return lst[i+1]
 
 
+gps_list=getdata(url1).split(" ")
 
+#실시간 킥보드 데이터
+lat=gps_list[1]
+lon=gps_list[2]
 gyro_list=getdata(url2).split(" ")
 gx=gyro_list[1]
 gy=gyro_list[2]
@@ -136,6 +141,22 @@ if float(ax) > -5.5:  # ax 값 테스트
             }
 
             requests.request("POST", create_url, headers=headers, data=payload)
+
+            # penalty_zone에 번호 + gps 보내기
+            penalty_zone_url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone"
+
+            penalty_list = [0, lat, lon]
+            penalty_str = " ".join(penalty_list)
+            
+            payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+penalty_list+"\"\n    }\n}"
+            headers = {
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': '{{aei}}',
+            'Content-Type': 'application/vnd.onem2m-res+json; ty=4'
+            }
+
+            requests.request("POST", penalty_zone_url, headers=headers, data=payload)
 
     
             # 특정 사용자의 누적벌점 & 급제동 누적벌점 put으로 수정

@@ -210,6 +210,22 @@ if float(az) < 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
 
             requests.request("POST", create_url, headers=headers, data=payload)
 
+            # penalty_zone에 번호 + gps 보내기
+            penalty_zone_url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone"
+
+            penalty_list = [1, lat, lon]
+            penalty_str = " ".join(penalty_list)
+            
+            payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+penalty_list+"\"\n    }\n}"
+            headers = {
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': '{{aei}}',
+            'Content-Type': 'application/vnd.onem2m-res+json; ty=4'
+            }
+
+            requests.request("POST", penalty_zone_url, headers=headers, data=payload)
+
     # 특정 사용자의 누적벌점 & 방지턱 과속 누적벌점 put으로 수정
     print("warning")
     a=a+1

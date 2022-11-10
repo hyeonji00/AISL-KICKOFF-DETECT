@@ -66,15 +66,15 @@ school_zone=schooldata(url2).split(" ")
 gps_list=getdata(url1).split(" ")
 
 #실시간 킥보드 데이터
-kick_lat=gps_list[1]   
-kick_lon=gps_list[2]
+lat=gps_list[1]   
+lon=gps_list[2]
 kick_speed=gps_list[3]
 
 school_lat_1=school_zone[1]
 school_lon_1=school_zone[2]
 
 
-distance_0=lat_long_dist(kick_lat,kick_lon,school_lat_1,school_lon_1)
+distance_0=lat_long_dist(lat,lon,school_lat_1,school_lon_1)
 
 
 
@@ -118,17 +118,17 @@ if distance_0 > float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
 
             response = requests.request("GET", detail_url, headers=headers, data=payload)
 
-            # 누적벌점 : 6번, 급정거 누적벌점 : 11번
+            # 누적벌점 : 8번, 급정거 누적벌점 : 11번
 
             # 3번 사용자의 정보만 가져오기
             if (response.json()["m2m:cin"]["con"][0] == "3"):
                 print("3번 사용자")
 
-                penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[7]) + 1)
+                penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)
                 penalty_sub = str(int(response.json()["m2m:cin"]["con"].split(" ")[11]) + 1)
 
                 response_list = response.json()["m2m:cin"]["con"].split(" ")
-                response_list[7] = penalty
+                response_list[8] = penalty
                 response_list[11] = penalty_sub
                 #print(response_list)
 
@@ -160,6 +160,23 @@ if distance_0 > float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
                 }
 
                 requests.request("POST", create_url, headers=headers, data=payload)
+
+                # penalty_zone에 번호 + gps 보내기
+                penalty_zone_url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone"
+
+                penalty_list = [2, lat, lon]
+                penalty_str = " ".join(penalty_list)
+                
+                payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+penalty_list+"\"\n    }\n}"
+                headers = {
+                'Accept': 'application/json',
+                'X-M2M-RI': '12345',
+                'X-M2M-Origin': '{{aei}}',
+                'Content-Type': 'application/vnd.onem2m-res+json; ty=4'
+                }
+
+                requests.request("POST", penalty_zone_url, headers=headers, data=payload)
+
         # 특정 사용자의 누적벌점 & 보호구역 과속 누적벌점 put으로 수정
         
         print("warning")
