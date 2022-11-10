@@ -2,8 +2,6 @@
 ## 2022/10/02
 ## az의 기준치를 정하면 끝.(직접 타면서 테스트 해야함.)
 
-
-
 import requests
 from math import sin, cos, sqrt, atan2, radians
 
@@ -15,11 +13,11 @@ from math import sin, cos, sqrt, atan2, radians
 ##  1. kick_speed
 ##  2. Az,Gz 둘다
 
-url1 = "http://203.250.148.120:20519/Mobius/kick/gps/la"
-url2 = "http://203.250.148.120:20519/Mobius/kick/gyro/la"
+url1 = "http://203.253.128.161:7579/Mobius/kick/gps/la"
+url2 = "http://203.253.128.161:7579/Mobius/kick/gyro/la"
 #데이터의 rn값으로 url 불러올수 있다.
-url3 = "http://203.250.148.120:20519/Mobius/kick/buff_data/4-20221002082519902"
-url4 = "http://203.250.148.120:20519/Mobius/kick/buff_data/4-20221002082447360"
+url3 = "http://203.253.128.161:7579/Mobius/kick/buff_data/4-20221002082519902"
+url4 = "http://203.253.128.161:7579/Mobius/kick/buff_data/4-20221002082447360"
 
 
 
@@ -132,9 +130,10 @@ while True:
         
         #z축 수집
 
-# 특정 사용자의 누적벌점 & 방지턱 과속 누적벌점 put으로 수정
-    
-    if float(az) > 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
+    # 원래 부등호 > !!!
+    if float(az) < 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
+
+        # 특정 사용자의 누적벌점 & 방지턱 과속 누적벌점 put으로 수정
         print("warning")
         a=a+1
         print("방지턱개수: ", a)

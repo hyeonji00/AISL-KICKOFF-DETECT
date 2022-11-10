@@ -4,7 +4,7 @@
 
 import requests
 
-url2 = "http://203.250.148.120:20519/Mobius/kick/gyro/la"
+url2 = "http://203.253.128.161:7579/Mobius/kick/gyro/la"
 
 kick_id="MFBE29"
 #heder and payload
@@ -54,12 +54,93 @@ az=gyro_list[6]
 # n을 10 또는 15 정도로 생각중
 #if kick_change_speed > 10 and ax < -5.5:
 
-
-# 특정 사용자의 누적벌점 & 급제동 누적벌점 put으로 수정
+# 부등호 방향 바꿨어용 ( < -> 이게 원래 코드)
 
 if float(ax) < -5.5:  # ax 값 테스트
+
+    # 사용자의 모든 정보 가져오기
+
+    all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
+
+    payload={}
+    headers = {
+        'Accept': 'application/json',
+        'X-M2M-RI': '12345',
+        'X-M2M-Origin': 'SOrigin'
+    }
+
+    ID = []
+
+    response = requests.request("GET", all_url, headers=headers, data=payload)
+
+    for i in range(len(response.json()["m2m:uril"])) :
+        ID.append(response.json()["m2m:uril"][i].split("/")[3])
+
+    # print(ID)
+
+
+    # ID별 정보 가져오기
+
+    for i in range(len(ID)) :
+
+        detail_url = "http://203.253.128.161:7579/Mobius/kick_user/Account/" + ID[i]
+
+        payload={}
+        headers = {
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': 'SOrigin'
+        }
+
+        response = requests.request("GET", detail_url, headers=headers, data=payload)
+
+        # 누적벌점 : 6번, 급정거 누적벌점 : 9번
+
+        # 3번 사용자의 정보만 가져오기
+        if (response.json()["m2m:cin"]["con"][0] == "3"):
+            print("3번 사용자")
+
+            penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[6]) + 1)
+            penalty_sub = str(int(response.json()["m2m:cin"]["con"].split(" ")[9]) + 1)
+
+            response_list = response.json()["m2m:cin"]["con"].split(" ")
+            response_list[6] = penalty
+            response_list[9] = penalty_sub
+            #print(response_list)
+
+            # 벌점 수정
+            response_str = " ".join(response_list)
+            #print(response_str)
+
+
+            # 원래 데이터 삭제
+            payload = ""
+            headers = {
+            'Accept': 'application/xml',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': '{{aei}}'
+            }
+
+            response = requests.request("DELETE", detail_url, headers=headers, data=payload)
+
+
+            # 새로운 벌점으로 재생성
+            create_url = "http://203.253.128.161:7579/Mobius/kick_user/Account"
+
+            payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+response_str+"\"\n    }\n}"
+            headers = {
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': '{{aei}}',
+            'Content-Type': 'application/vnd.onem2m-res+json; ty=4'
+            }
+
+            requests.request("POST", create_url, headers=headers, data=payload)
+
     
-    print('warning')
-else:
-    print('normal')
+            # 특정 사용자의 누적벌점 & 급제동 누적벌점 put으로 수정
+            #print('warning')
+        else:
+            continue
+            #print('normal')
 

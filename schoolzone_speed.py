@@ -6,9 +6,9 @@
 import requests
 from math import sin, cos, sqrt, atan2, radians
 
-url1 = "http://203.250.148.120:20519/Mobius/kick/gps/la"
+url1 = "http://203.253.128.161:7579/Mobius/kick/gps/la"
 
-url2 = "http://203.250.148.120:20519/Mobius/kick/schoolzone/4-20221002104818772"
+url2 = "http://203.253.128.161:7579/Mobius/kick/schoolzone/4-20221002104818772"
 
 
 
@@ -78,11 +78,12 @@ while True:
 
 
 
-# 특정 사용자의 누적벌점 & 보호구역 과속 누적벌점 put으로 수정
-
     print(distance_0)
     if distance_0 < float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
         if float(kick_speed) > float(15):   # 킥보드의 속도 15 km/h 보다 
+
+            # 특정 사용자의 누적벌점 & 보호구역 과속 누적벌점 put으로 수정
+            
             print("warning")
         else:
             print("normal")
