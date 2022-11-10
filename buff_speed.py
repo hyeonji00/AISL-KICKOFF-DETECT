@@ -16,8 +16,8 @@ from math import sin, cos, sqrt, atan2, radians
 url1 = "http://203.253.128.161:7579/Mobius/kick/gps/la"
 url2 = "http://203.253.128.161:7579/Mobius/kick/gyro/la"
 #데이터의 rn값으로 url 불러올수 있다.
-url3 = "http://203.253.128.161:7579/Mobius/kick/buff_data/4-20221002082519902"
-url4 = "http://203.253.128.161:7579/Mobius/kick/buff_data/4-20221002082447360"
+url3 = "http://203.253.128.161:7579/Mobius/kick/buff_data/4-20221101114406011"
+url4 = "http://203.253.128.161:7579/Mobius/kick/buff_data/4-20221101114238400"
 
 
 
@@ -42,7 +42,7 @@ def getdata(url):
             
             if kick_id in lst[i+1]:
                 
-                return lst[i+1]
+                return str(lst[i+1])
 
 def getbuffdata(url):
     response = requests.request("GET", url, headers=headers, data=payload)
@@ -50,7 +50,7 @@ def getbuffdata(url):
     for i in range(0,len(lst)):
         if "con" in lst[i]:
             lst[i+1]=lst[i+1].replace('}','').replace('"','')
-            return lst[i+1]
+            return str(lst[i+1])
 
 # gps 거리구하는 함수
 def lat_long_dist(lat1,lon1,lat2,lon2):
@@ -131,7 +131,84 @@ while True:
         #z축 수집
 
     # 원래 부등호 > !!!
-    if float(az) < 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
+    if float(az) > 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
+
+        all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
+
+        payload={}
+        headers = {
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': 'SOrigin'
+        }
+
+        ID = []
+
+        response = requests.request("GET", all_url, headers=headers, data=payload)
+
+        for i in range(len(response.json()["m2m:uril"])) :
+            ID.append(response.json()["m2m:uril"][i].split("/")[3])
+
+        # print(ID)
+
+
+        # ID별 정보 가져오기
+
+        for i in range(len(ID)) :
+
+            detail_url = "http://203.253.128.161:7579/Mobius/kick_user/Account/" + ID[i]
+
+            payload={}
+            headers = {
+                'Accept': 'application/json',
+                'X-M2M-RI': '12345',
+                'X-M2M-Origin': 'SOrigin'
+            }
+
+            response = requests.request("GET", detail_url, headers=headers, data=payload)
+
+            # 누적벌점 : 6번, 방지턱 누적벌점 : 10번
+
+            # 3번 사용자의 정보만 가져오기
+            if (response.json()["m2m:cin"]["con"][0] == "3"):
+                print("3번 사용자")
+
+                penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[6]) + 1)
+                penalty_sub = str(int(response.json()["m2m:cin"]["con"].split(" ")[10]) + 1)
+
+                response_list = response.json()["m2m:cin"]["con"].split(" ")
+                response_list[6] = penalty
+                response_list[10] = penalty_sub
+                #print(response_list)
+
+                # 벌점 수정
+                response_str = " ".join(response_list)
+                #print(response_str)
+
+
+                # 원래 데이터 삭제
+                payload = ""
+                headers = {
+                'Accept': 'application/xml',
+                'X-M2M-RI': '12345',
+                'X-M2M-Origin': '{{aei}}'
+                }
+
+                response = requests.request("DELETE", detail_url, headers=headers, data=payload)
+
+
+                # 새로운 벌점으로 재생성
+                create_url = "http://203.253.128.161:7579/Mobius/kick_user/Account"
+
+                payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+response_str+"\"\n    }\n}"
+                headers = {
+                'Accept': 'application/json',
+                'X-M2M-RI': '12345',
+                'X-M2M-Origin': '{{aei}}',
+                'Content-Type': 'application/vnd.onem2m-res+json; ty=4'
+                }
+
+                requests.request("POST", create_url, headers=headers, data=payload)
 
         # 특정 사용자의 누적벌점 & 방지턱 과속 누적벌점 put으로 수정
         print("warning")
