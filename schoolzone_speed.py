@@ -60,31 +60,54 @@ def lat_long_dist(lat1,lon1,lat2,lon2):
     return distance
 
 
-while True:
+##while True:
     
-    school_zone=schooldata(url2).split(" ")
-    gps_list=getdata(url1).split(" ")
+school_zone=schooldata(url2).split(" ")
+gps_list=getdata(url1).split(" ")
 
-    #실시간 킥보드 데이터
-    kick_lat=gps_list[1]   
-    kick_lon=gps_list[2]
-    kick_speed=gps_list[3]
-    
-    school_lat_1=school_zone[1]
-    school_lon_1=school_zone[2]
+#실시간 킥보드 데이터
+kick_lat=gps_list[1]   
+kick_lon=gps_list[2]
+kick_speed=gps_list[3]
 
-
-    distance_0=lat_long_dist(kick_lat,kick_lon,school_lat_1,school_lon_1)
+school_lat_1=school_zone[1]
+school_lon_1=school_zone[2]
 
 
+distance_0=lat_long_dist(kick_lat,kick_lon,school_lat_1,school_lon_1)
 
-    # print(distance_0)
-    # <
-    if distance_0 < float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
 
-        # >
-        if float(kick_speed) > float(15):   # 킥보드의 속도 15 km/h 보다 
-            all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
+
+# print(distance_0)
+# <
+if distance_0 > float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
+
+    # >
+    if float(kick_speed) < float(15):   # 킥보드의 속도 15 km/h 보다 
+        all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
+
+        payload={}
+        headers = {
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': 'SOrigin'
+        }
+
+        ID = []
+
+        response = requests.request("GET", all_url, headers=headers, data=payload)
+
+        for i in range(len(response.json()["m2m:uril"])) :
+            ID.append(response.json()["m2m:uril"][i].split("/")[3])
+
+        # print(ID)
+
+
+        # ID별 정보 가져오기
+
+        for i in range(len(ID)) :
+
+            detail_url = "http://203.253.128.161:7579/Mobius/kick_user/Account/" + ID[i]
 
             payload={}
             headers = {
@@ -93,75 +116,52 @@ while True:
                 'X-M2M-Origin': 'SOrigin'
             }
 
-            ID = []
+            response = requests.request("GET", detail_url, headers=headers, data=payload)
 
-            response = requests.request("GET", all_url, headers=headers, data=payload)
+            # 누적벌점 : 6번, 급정거 누적벌점 : 11번
 
-            for i in range(len(response.json()["m2m:uril"])) :
-                ID.append(response.json()["m2m:uril"][i].split("/")[3])
+            # 3번 사용자의 정보만 가져오기
+            if (response.json()["m2m:cin"]["con"][0] == "3"):
+                print("3번 사용자")
 
-            # print(ID)
+                penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[7]) + 1)
+                penalty_sub = str(int(response.json()["m2m:cin"]["con"].split(" ")[11]) + 1)
+
+                response_list = response.json()["m2m:cin"]["con"].split(" ")
+                response_list[7] = penalty
+                response_list[11] = penalty_sub
+                #print(response_list)
+
+                # 벌점 수정
+                response_str = " ".join(response_list)
+                #print(response_str)
 
 
-            # ID별 정보 가져오기
-
-            for i in range(len(ID)) :
-
-                detail_url = "http://203.253.128.161:7579/Mobius/kick_user/Account/" + ID[i]
-
-                payload={}
+                # 원래 데이터 삭제
+                payload = ""
                 headers = {
-                    'Accept': 'application/json',
-                    'X-M2M-RI': '12345',
-                    'X-M2M-Origin': 'SOrigin'
+                'Accept': 'application/xml',
+                'X-M2M-RI': '12345',
+                'X-M2M-Origin': '{{aei}}'
                 }
 
-                response = requests.request("GET", detail_url, headers=headers, data=payload)
-
-                # 누적벌점 : 6번, 급정거 누적벌점 : 11번
-
-                # 3번 사용자의 정보만 가져오기
-                if (response.json()["m2m:cin"]["con"][0] == "3"):
-                    print("3번 사용자")
-
-                    penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[6]) + 1)
-                    penalty_sub = str(int(response.json()["m2m:cin"]["con"].split(" ")[11]) + 1)
-
-                    response_list = response.json()["m2m:cin"]["con"].split(" ")
-                    response_list[6] = penalty
-                    response_list[11] = penalty_sub
-                    #print(response_list)
-
-                    # 벌점 수정
-                    response_str = " ".join(response_list)
-                    #print(response_str)
+                response = requests.request("DELETE", detail_url, headers=headers, data=payload)
 
 
-                    # 원래 데이터 삭제
-                    payload = ""
-                    headers = {
-                    'Accept': 'application/xml',
-                    'X-M2M-RI': '12345',
-                    'X-M2M-Origin': '{{aei}}'
-                    }
+                # 새로운 벌점으로 재생성
+                create_url = "http://203.253.128.161:7579/Mobius/kick_user/Account"
 
-                    response = requests.request("DELETE", detail_url, headers=headers, data=payload)
+                payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+response_str+"\"\n    }\n}"
+                headers = {
+                'Accept': 'application/json',
+                'X-M2M-RI': '12345',
+                'X-M2M-Origin': '{{aei}}',
+                'Content-Type': 'application/vnd.onem2m-res+json; ty=4'
+                }
 
-
-                    # 새로운 벌점으로 재생성
-                    create_url = "http://203.253.128.161:7579/Mobius/kick_user/Account"
-
-                    payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+response_str+"\"\n    }\n}"
-                    headers = {
-                    'Accept': 'application/json',
-                    'X-M2M-RI': '12345',
-                    'X-M2M-Origin': '{{aei}}',
-                    'Content-Type': 'application/vnd.onem2m-res+json; ty=4'
-                    }
-
-                    requests.request("POST", create_url, headers=headers, data=payload)
-            # 특정 사용자의 누적벌점 & 보호구역 과속 누적벌점 put으로 수정
-            
-            print("warning")
-        else:
-            print("normal")
+                requests.request("POST", create_url, headers=headers, data=payload)
+        # 특정 사용자의 누적벌점 & 보호구역 과속 누적벌점 put으로 수정
+        
+        print("warning")
+    else:
+        print("normal")

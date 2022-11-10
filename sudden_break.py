@@ -94,17 +94,17 @@ if float(ax) > -5.5:  # ax 값 테스트
 
         response = requests.request("GET", detail_url, headers=headers, data=payload)
 
-        # 누적벌점 : 6번, 급정거 누적벌점 : 9번
+        # 누적벌점 : 8번, 급정거 누적벌점 : 9번
 
         # 3번 사용자의 정보만 가져오기
         if (response.json()["m2m:cin"]["con"][0] == "3"):
             print("3번 사용자")
 
-            penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[6]) + 1)
+            penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)
             penalty_sub = str(int(response.json()["m2m:cin"]["con"].split(" ")[9]) + 1)
 
             response_list = response.json()["m2m:cin"]["con"].split(" ")
-            response_list[6] = penalty
+            response_list[8] = penalty
             response_list[9] = penalty_sub
             #print(response_list)
 
