@@ -33,7 +33,6 @@ for i in range(len(ID)) :
     response = requests.request("GET", detail_url, headers=headers, data=payload)
 
     response_list = response.json()["m2m:cin"]["con"].split(" ")
-    print(response_list)
 
     # 4: 면허증 취득일
     # license_date = response_list[4]
@@ -73,11 +72,11 @@ for i in range(len(ID)) :
             rating = "F"
 
         if score < 0.00045: 
-            safety_danger = "안전"
+            safety_danger = "safety"
         elif score < 0.00085:
-            safety_danger = "보통"
+            safety_danger = "normal"
         else :
-            safety_danger = "위험"
+            safety_danger = "danger"
 
         response_list[6] = rating
         response_list[7] = safety_danger
@@ -107,4 +106,4 @@ for i in range(len(ID)) :
         'Content-Type': 'application/vnd.onem2m-res+json; ty=4'
         }
 
-        requests.request("POST", create_url, headers=headers, data=payload)
+        response = requests.request("POST", create_url, headers=headers, data=payload)

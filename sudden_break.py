@@ -145,10 +145,10 @@ if float(ax) > -5.5:  # ax 값 테스트
             # penalty_zone에 번호 + gps 보내기
             penalty_zone_url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone"
 
-            penalty_list = [0, lat, lon]
+            penalty_list = [str(0), str(lat), str(lon)]
             penalty_str = " ".join(penalty_list)
             
-            payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+penalty_list+"\"\n    }\n}"
+            payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+penalty_str+"\"\n    }\n}"
             headers = {
             'Accept': 'application/json',
             'X-M2M-RI': '12345',

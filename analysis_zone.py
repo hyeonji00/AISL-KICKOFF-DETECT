@@ -5,9 +5,9 @@ url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone?fu=1&ty=4"
 
 payload={}
 headers = {
-  'Accept': 'application/json',
-  'X-M2M-RI': '12345',
-  'X-M2M-Origin': 'SOrigin'
+    'Accept': 'application/json',
+    'X-M2M-RI': '12345',
+    'X-M2M-Origin': 'SOrigin'
 }
 
 response = requests.request("GET", url, headers=headers, data=payload)
@@ -19,8 +19,7 @@ response = requests.request("GET", url, headers=headers, data=payload)
 ID = []
 
 for i in range(len(response.json()["m2m:uril"])):
-    ID.append(response.json()["m2m:uril"].split("/")[3])
-
+    ID.append(response.json()["m2m:uril"][i].split("/")[3])
 
 cnt = 0
 
@@ -35,12 +34,13 @@ for i in range(len(ID)):
     'X-M2M-Origin': 'SOrigin'
     }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+    response = requests.request("GET", detail_url, headers=headers, data=payload)
 
-    lat_1 = response.json()["m2m:cin"]["con"][1]
-    long_1 = response.json()["m2m:cin"]["con"][2]
+    cnt_list = response.json()["m2m:cin"]["con"].split(" ")
+    cnt_list.append(str(0))
 
-    cnt_list = response.json()["m2m:cin"]["con"].split("/")
+    lat_1 = cnt_list[1]
+    long_1 = cnt_list[2]
 
     for j in range(len(ID)):
         url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone/" + ID[j]
@@ -54,16 +54,18 @@ for i in range(len(ID)):
 
         response = requests.request("GET", url, headers=headers, data=payload)
 
-        lat_2 = response.json()["m2m:cin"]["con"][1]
-        long_2 = response.json()["m2m:cin"]["con"][2]
-
+        lat_2 = response.json()["m2m:cin"]["con"].split(" ")[1]
+        long_2 = response.json()["m2m:cin"]["con"].split(" ")[2]
+        
         if lat_1 == lat_2 and long_1 == long_2:
             change = 1
             cnt += 1
-
-
+    
     if change == 1:
-        cnt_str = " ".join(cnt_list) + " " + str(cnt)
+        cnt_list[3] = str(cnt)
+        cnt_str = " ".join(cnt_list)
+
+        print(cnt_str)
 
         # 새로운 벌점으로 재생성
         create_url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone"
@@ -87,17 +89,15 @@ for i in range(len(ID)):
         }
 
         response = requests.request("DELETE", detail_url, headers=headers, data=payload)
-
-
-# 5회 이상이면 위험 구역으로 설정
+    
 
 url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone?fu=1&ty=4"
 
 payload={}
 headers = {
-  'Accept': 'application/json',
-  'X-M2M-RI': '12345',
-  'X-M2M-Origin': 'SOrigin'
+    'Accept': 'application/json',
+    'X-M2M-RI': '12345',
+    'X-M2M-Origin': 'SOrigin'
 }
 
 response = requests.request("GET", url, headers=headers, data=payload)
@@ -122,7 +122,7 @@ for i in range(len(ID)):
     'X-M2M-Origin': 'SOrigin'
     }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+    response = requests.request("GET", detail_url, headers=headers, data=payload)
 
     danger_list = response.json()["m2m:cin"]["con"].split("/")
 
