@@ -170,8 +170,8 @@ if float(az) < 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
         # 누적벌점 : 6번, 방지턱 누적벌점 : 10번
 
         # 3번 사용자의 정보만 가져오기
-        if (response.json()["m2m:cin"]["con"][0] == "3"):
-            print("3번 사용자")
+        if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kickoff@email.com"):
+            print("사용자")
 
             penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)
             penalty_sub = str(int(response.json()["m2m:cin"]["con"].split(" ")[10]) + 1)

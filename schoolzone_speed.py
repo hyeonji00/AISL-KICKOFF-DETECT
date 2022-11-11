@@ -121,7 +121,7 @@ if distance_0 > float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
             # 누적벌점 : 8번, 급정거 누적벌점 : 11번
 
             # 3번 사용자의 정보만 가져오기
-            if (response.json()["m2m:cin"]["con"][0] == "3"):
+            if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kickoff@email.com"):
                 print("3번 사용자")
 
                 penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)

@@ -102,7 +102,7 @@ if float(ax) > -5.5:  # ax 값 테스트
         # 누적벌점 : 8번, 급정거 누적벌점 : 9번
 
         # 3번 사용자의 정보만 가져오기
-        if (response.json()["m2m:cin"]["con"][0] == "3"):
+        if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kickoff@email.com"):
             print("3번 사용자")
 
             penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)
