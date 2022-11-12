@@ -5,6 +5,7 @@
 import requests
 from math import sin, cos, sqrt, atan2, radians
 import time
+import os
 
 # # 킥보드 속도 
 # kick_speed=float(all_speed_gps[-1][-1])
@@ -50,6 +51,7 @@ def lat_long_dist(lat1,lon1,lat2,lon2):
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
     distance = round(R * c, 6)
     return distance
+
 
 
 
@@ -243,8 +245,6 @@ while(1):
                 print('normal')
 
     time.sleep(5)
-
-            
 
 
 
