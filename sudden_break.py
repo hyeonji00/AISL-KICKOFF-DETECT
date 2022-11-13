@@ -64,7 +64,7 @@ while(1) :
 
     # 부등호 방향 바꿨어용 ( < -> 이게 원래 코드)
 
-    if float(ax) > -5.5:  # ax 값 테스트
+    if float(ax) < -5.5:  # ax 값 테스트
 
         # 사용자의 모든 정보 가져오기
 
@@ -115,6 +115,8 @@ while(1) :
                 response_list[8] = penalty
                 response_list[9] = penalty_sub
                 #print(response_list)
+
+                response_list[12] = "1"
 
                 # 벌점 수정
                 response_str = " ".join(response_list)

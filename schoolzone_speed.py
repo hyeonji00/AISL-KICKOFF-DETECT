@@ -133,6 +133,8 @@ while(1) :
                     response_list[11] = penalty_sub
                     #print(response_list)
 
+                    response_list[12] = "1"
+
                     # 벌점 수정
                     response_str = " ".join(response_list)
                     #print(response_str)

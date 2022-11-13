@@ -141,7 +141,7 @@ while(1):
         if lat_long_dist(a,b,lat,lon) < 0.01:  # 미터 단위임.
             
                 # 원래 부등호 > !!!
-            if float(az) < 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
+            if float(az) > 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
 
                 all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
 
@@ -190,6 +190,7 @@ while(1):
                         response_list[8] = penalty
                         response_list[10] = penalty_sub
                         #print(response_list)
+                        response_list[12] = "1"
 
                         # 벌점 수정
                         response_str = " ".join(response_list)

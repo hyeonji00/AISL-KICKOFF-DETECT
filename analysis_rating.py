@@ -1,5 +1,4 @@
 import requests
-import time
 
 while(1):
     all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
@@ -59,7 +58,7 @@ while(1):
 
         # (누적벌점 / 운행 시간) 값에 따라 등급 A~F) / 안전/위험(50% 기준)
 
-        if (drive_time != 0) :
+        if (drive_time != 0 and response_list[12] == "1") :
             score = penalty/drive_time
 
             if score < 0.00015:
@@ -82,6 +81,8 @@ while(1):
 
             response_list[6] = rating
             response_list[7] = safety_danger
+
+            response_list[12] = "0"
 
             response_str = " ".join(response_list)
             print(response_str)
@@ -109,4 +110,3 @@ while(1):
             }
 
             response = requests.request("POST", create_url, headers=headers, data=payload)
-            time.sleep(5)
