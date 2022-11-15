@@ -1,7 +1,7 @@
 import requests
 
 while(1):
-    all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
+    all_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account?fu=1&ty=4"
 
     payload={}
     headers = {
@@ -15,14 +15,15 @@ while(1):
     response = requests.request("GET", all_url, headers=headers, data=payload)
 
     for i in range(len(response.json()["m2m:uril"])) :
-        ID.append(response.json()["m2m:uril"][i].split("/")[3])
+        ID.append(response.json()["m2m:uril"][i].split("/")[4])
 
+    print(ID)
 
     # ID별 정보 가져오기
 
     for i in range(len(ID)) :
 
-        detail_url = "http://203.253.128.161:7579/Mobius/kick_user/Account/" + ID[i]
+        detail_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account/" + ID[i]
 
         payload={}
         headers = {
@@ -32,6 +33,8 @@ while(1):
         }
 
         response = requests.request("GET", detail_url, headers=headers, data=payload)
+
+        print(response.json())
 
         response_list = response.json()["m2m:cin"]["con"].split(" ")
 
@@ -58,7 +61,7 @@ while(1):
 
         # (누적벌점 / 운행 시간) 값에 따라 등급 A~F) / 안전/위험(50% 기준)
 
-        if (drive_time != 0 and response_list[12] == "1") :
+        if (drive_time != 0 ) :
             score = penalty/drive_time
 
             if score < 0.00015:
@@ -99,7 +102,7 @@ while(1):
 
 
             # 새로운 cin 재생성
-            create_url = "http://203.253.128.161:7579/Mobius/kick_user/Account"
+            create_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account"
 
             payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+response_str+"\"\n    }\n}"
             headers = {

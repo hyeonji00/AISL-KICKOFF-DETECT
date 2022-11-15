@@ -21,8 +21,8 @@ def getdata(url):
 
 
 while(1) :
-    url1 = "http://203.253.128.161:7579/Mobius/kick/gps/la"
-    url2 = "http://203.253.128.161:7579/Mobius/kick/gyro/la"
+    url1 = "http://203.253.128.161:7579/Mobius/kick_off/data/gps/la"
+    url2 = "http://203.253.128.161:7579/Mobius/kick_off/data/gyro/la"
 
     kick_id="MFBE29"
     #heder and payload
@@ -68,7 +68,7 @@ while(1) :
 
         # 사용자의 모든 정보 가져오기
 
-        all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
+        all_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account?fu=1&ty=4"
 
         payload={}
         headers = {
@@ -82,16 +82,14 @@ while(1) :
         response = requests.request("GET", all_url, headers=headers, data=payload)
 
         for i in range(len(response.json()["m2m:uril"])) :
-            ID.append(response.json()["m2m:uril"][i].split("/")[3])
-
-        # print(ID)
+            ID.append(response.json()["m2m:uril"][i].split("/")[4])
 
 
         # ID별 정보 가져오기
 
         for i in range(len(ID)) :
 
-            detail_url = "http://203.253.128.161:7579/Mobius/kick_user/Account/" + ID[i]
+            detail_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account/" + ID[i]
 
             payload={}
             headers = {
@@ -135,7 +133,7 @@ while(1) :
 
 
                 # 새로운 벌점으로 재생성
-                create_url = "http://203.253.128.161:7579/Mobius/kick_user/Account"
+                create_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account"
 
                 payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+response_str+"\"\n    }\n}"
                 headers = {
@@ -148,7 +146,7 @@ while(1) :
                 requests.request("POST", create_url, headers=headers, data=payload)
 
                 # penalty_zone에 번호 + gps 보내기
-                penalty_zone_url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone"
+                penalty_zone_url = "http://203.253.128.161:7579/Mobius/kick_off/user/penalty_zone"
 
                 penalty_list = [str(0), str(lat), str(lon)]
                 penalty_str = " ".join(penalty_list)

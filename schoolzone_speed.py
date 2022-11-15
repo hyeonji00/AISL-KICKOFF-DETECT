@@ -46,9 +46,9 @@ def lat_long_dist(lat1,lon1,lat2,lon2):
     return distance
 
 while(1) :
-    url1 = "http://203.253.128.161:7579/Mobius/kick/gps/la"
+    url1 = "http://203.253.128.161:7579/Mobius/kick_off/data/gps/la"
 
-    url2 = "http://203.253.128.161:7579/Mobius/kick/schoolzone/4-20221101114429118"
+    url2 = "http://203.253.128.161:7579/Mobius/kick_off/map/school_zone/gps/4-20221115065641866"
 
 
 
@@ -71,8 +71,8 @@ while(1) :
     lon=gps_list[2]
     kick_speed=gps_list[3]
 
-    school_lat_1=school_zone[1]
-    school_lon_1=school_zone[2]
+    school_lat_1=school_zone[0]
+    school_lon_1=school_zone[1]
 
 
     distance_0=lat_long_dist(lat,lon,school_lat_1,school_lon_1)
@@ -82,10 +82,9 @@ while(1) :
     # print(distance_0)
     # <
     if distance_0 < float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
-
         # >
         if float(kick_speed) > float(15):   # 킥보드의 속도 15 km/h 보다 
-            all_url = "http://203.253.128.161:7579/Mobius/kick_user/Account?fu=1&ty=4"
+            all_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account?fu=1&ty=4"
 
             payload={}
             headers = {
@@ -99,7 +98,7 @@ while(1) :
             response = requests.request("GET", all_url, headers=headers, data=payload)
 
             for i in range(len(response.json()["m2m:uril"])) :
-                ID.append(response.json()["m2m:uril"][i].split("/")[3])
+                ID.append(response.json()["m2m:uril"][i].split("/")[4])
 
             # print(ID)
 
@@ -108,7 +107,7 @@ while(1) :
 
             for i in range(len(ID)) :
 
-                detail_url = "http://203.253.128.161:7579/Mobius/kick_user/Account/" + ID[i]
+                detail_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account/" + ID[i]
 
                 payload={}
                 headers = {
@@ -152,7 +151,7 @@ while(1) :
 
 
                     # 새로운 벌점으로 재생성
-                    create_url = "http://203.253.128.161:7579/Mobius/kick_user/Account"
+                    create_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account"
 
                     payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+response_str+"\"\n    }\n}"
                     headers = {
@@ -165,7 +164,7 @@ while(1) :
                     requests.request("POST", create_url, headers=headers, data=payload)
 
                     # penalty_zone에 번호 + gps 보내기
-                    penalty_zone_url = "http://203.253.128.161:7579/Mobius/kick_user/penalty_zone"
+                    penalty_zone_url = "http://203.253.128.161:7579/Mobius/kick_off/user/penalty_zone"
 
                     penalty_list = [str(2), str(lat), str(lon)]
                     penalty_str = " ".join(penalty_list)
