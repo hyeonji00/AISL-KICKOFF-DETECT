@@ -61,7 +61,7 @@ while(1):
 
         # (누적벌점 / 운행 시간) 값에 따라 등급 A~F) / 안전/위험(50% 기준)
 
-        if (drive_time != 0 ) :
+        if (drive_time != 0 and response_list[12] == "1") :
             score = penalty/drive_time
 
             if score < 0.00015:
