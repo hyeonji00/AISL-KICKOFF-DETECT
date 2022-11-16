@@ -23,7 +23,7 @@ while(1):
 
     for i in range(len(ID)) :
 
-        detail_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account/" + ID[i]
+        detail_url = "http://203.250.148.120:20519/Mobius/kick_off/user/account/" + ID[i]
 
         payload={}
         headers = {
@@ -102,7 +102,7 @@ while(1):
 
 
             # 새로운 cin 재생성
-            create_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account"
+            create_url = "http://203.250.148.120:20519/Mobius/kick_off/user/account"
 
             payload = "{\n    \"m2m:cin\": {\n        \"con\" : \""+response_str+"\"\n    }\n}"
             headers = {
