@@ -70,6 +70,9 @@ while(1) :
     lat=gps_list[1]   
     lon=gps_list[2]
     kick_speed=gps_list[3]
+    kick_speed=float(kick_speed)*3600
+    #kick_speed=gps_list[3]*3600
+
 
     school_lat_1=school_zone[0]
     school_lon_1=school_zone[1]
@@ -83,7 +86,7 @@ while(1) :
     # <
     if distance_0 < float(300/1000):  # 학교 정문(출입문) 과의 거리 300m
         # >
-        if float(kick_speed) > float(15):   # 킥보드의 속도 15 km/h 보다 
+        if float(kick_speed) > float(20):   # 킥보드의 속도 15 km/h 보다 
             all_url = "http://203.250.148.120:20519/Mobius/kick_off/user/account?fu=1&ty=4"
 
             payload={}
@@ -178,10 +181,9 @@ while(1) :
                     }
 
                     requests.request("POST", penalty_zone_url, headers=headers, data=payload)
-
-            # 특정 사용자의 누적벌점 & 보호구역 과속 누적벌점 put으로 수정
-            time.sleep(10)
             
             print("warning")
+            time.sleep(10)
         else:
             print("normal")
+            print()

@@ -124,6 +124,7 @@ while(1):
     lat=gps_list[1]
     lon=gps_list[2]
     speed=gps_list[3]
+    kick_speed=float(speed)*3600
     gx=gyro_list[1]
     gy=gyro_list[2]
     gz=gyro_list[3]
@@ -134,14 +135,13 @@ while(1):
     #print(gx,gy,gz,ax,ay,az)
 
     for i in range(len(buff_list)):
-        print(buff_list[i])
         a=buff_list[i][0]
         b=buff_list[i][1]
+        print(lat_long_dist(a,b,lat,lon))
         if lat_long_dist(a,b,lat,lon) < 0.01:  # 미터 단위임.
             
                 # 원래 부등호 > !!!
-            if float(az) > 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
-                print("!!!")
+            if float(kick_speed) > float(20):  #'5' 라는 값을 수집만 해서 바꾸면 됨.
 
                 all_url = "http://203.250.148.120:20519/Mobius/kick_off/user/account?fu=1&ty=4"
 
@@ -158,8 +158,6 @@ while(1):
 
                 for i in range(len(response.json()["m2m:uril"])) :
                     ID.append(response.json()["m2m:uril"][i].split("/")[4])
-
-                print(ID)
 
 
                 # ID별 정보 가져오기
@@ -181,7 +179,6 @@ while(1):
 
                     # 3번 사용자의 정보만 가져오기
                     if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kick@email.com"):
-                        print("사용자")
 
                         penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)
                         penalty_sub = str(int(response.json()["m2m:cin"]["con"].split(" ")[10]) + 1)
@@ -236,16 +233,10 @@ while(1):
                         }
 
                         requests.request("POST", penalty_zone_url, headers=headers, data=payload)
-                    
-                # 특정 사용자의 누적벌점 & 방지턱 과속 누적벌점 put으로 수정
 
                 print("warning")
-
-                a=a+1
-                print("방지턱개수: ", a)
+                time.sleep(10)
             else:
                 print('normal')
-
-    #time.sleep(10)
 
 

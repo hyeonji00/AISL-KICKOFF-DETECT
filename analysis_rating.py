@@ -1,7 +1,7 @@
 import requests
 
 while(1):
-    all_url = "http://203.253.128.161:7579/Mobius/kick_off/user/account?fu=1&ty=4"
+    all_url = "http://203.250.148.120:20519/Mobius/kick_off/user/account?fu=1&ty=4"
 
     payload={}
     headers = {
@@ -17,8 +17,6 @@ while(1):
     for i in range(len(response.json()["m2m:uril"])) :
         ID.append(response.json()["m2m:uril"][i].split("/")[4])
 
-    print(ID)
-
     # ID별 정보 가져오기
 
     for i in range(len(ID)) :
@@ -33,8 +31,6 @@ while(1):
         }
 
         response = requests.request("GET", detail_url, headers=headers, data=payload)
-
-        print(response.json())
 
         response_list = response.json()["m2m:cin"]["con"].split(" ")
 
@@ -88,7 +84,6 @@ while(1):
             response_list[12] = "0"
 
             response_str = " ".join(response_list)
-            print(response_str)
 
             # 원래 cin 삭제
             payload = ""

@@ -64,7 +64,9 @@ while(1) :
 
     # 부등호 방향 바꿨어용 ( < -> 이게 원래 코드)
 
-    if float(ax) < -5.5:  # ax 값 테스트
+    print(gx, gy, gz, ax,ay, az)
+
+    if abs(float(gx)) > 9:  # ax 값 테스트
 
         # 사용자의 모든 정보 가져오기
 
@@ -160,12 +162,9 @@ while(1) :
                 }
 
                 requests.request("POST", penalty_zone_url, headers=headers, data=payload)
-
+                print('warning')
                 time.sleep(10)
-                
-                # 특정 사용자의 누적벌점 & 급제동 누적벌점 put으로 수정
-                #print('warning')
+
             else:
-                continue
-                #print('normal')
+                print('normal')
 
