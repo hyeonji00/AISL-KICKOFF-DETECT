@@ -48,7 +48,7 @@ def lat_long_dist(lat1,lon1,lat2,lon2):
 while(1) :
     url1 = "http://203.250.148.120:20519/Mobius/kick_off/data/gps/la"
 
-    url2 = "http://203.250.148.120:20519/Mobius/kick_off/map/school_zone/gps/4-20221115065641866"
+    url2 = "http://203.250.148.120:20519/Mobius/kick_off/map/school_zone/gps/4-20221116015811529"
 
 
 
@@ -121,7 +121,7 @@ while(1) :
                 # 누적벌점 : 8번, 급정거 누적벌점 : 11번
 
                 # 3번 사용자의 정보만 가져오기
-                if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kickoff@email.com"):
+                if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kick@email.com"):
                     print("3번 사용자")
 
                     penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)

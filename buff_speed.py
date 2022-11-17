@@ -68,18 +68,18 @@ while(1):
         'X-M2M-Origin': 'SOrigin'
     }
 
-    ID = []
-
     response = requests.request("GET", all_url, headers=headers, data=payload)
+
+    ID_all = []
 
 
     for i in range(len(response.json()["m2m:uril"])) :
-        ID.append(response.json()["m2m:uril"][i].split("/")[5])
+        ID_all.append(response.json()["m2m:uril"][i].split("/")[5])
 
 
-    for i in range(len(ID)) :
+    for i in range(len(ID_all)) :
 
-        detail_url = "http://203.250.148.120:20519/Mobius/kick_off/map/speed_bump/gps/" + ID[i]
+        detail_url = "http://203.250.148.120:20519/Mobius/kick_off/map/speed_bump/gps/" + ID_all[i]
 
         payload={}
         headers = {
@@ -93,7 +93,7 @@ while(1):
         buff_list.append(response.json()["m2m:cin"]["con"].split(" "))
     #
 
-    print(buff_list)
+    #print(buff_list)
 
     url1 = "http://203.250.148.120:20519/Mobius/kick_off/data/gps/la"
     url2 = "http://203.250.148.120:20519/Mobius/kick_off/data/gyro/la"
@@ -130,7 +130,6 @@ while(1):
     ax=gyro_list[4]
     ay=gyro_list[5]
     az=gyro_list[6]
-    print(az)
     #print("lat: "+lat+" lon: "+lon+" speed: "+speed)
     #print(gx,gy,gz,ax,ay,az)
 
@@ -142,6 +141,7 @@ while(1):
             
                 # 원래 부등호 > !!!
             if float(az) > 5:  #'5' 라는 값을 수집만 해서 바꾸면 됨.
+                print("!!!")
 
                 all_url = "http://203.250.148.120:20519/Mobius/kick_off/user/account?fu=1&ty=4"
 
@@ -159,7 +159,7 @@ while(1):
                 for i in range(len(response.json()["m2m:uril"])) :
                     ID.append(response.json()["m2m:uril"][i].split("/")[4])
 
-                # print(ID)
+                print(ID)
 
 
                 # ID별 정보 가져오기
@@ -180,7 +180,7 @@ while(1):
                     # 누적벌점 : 6번, 방지턱 누적벌점 : 10번
 
                     # 3번 사용자의 정보만 가져오기
-                    if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kickoff@email.com"):
+                    if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kick@email.com"):
                         print("사용자")
 
                         penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)
@@ -236,16 +236,16 @@ while(1):
                         }
 
                         requests.request("POST", penalty_zone_url, headers=headers, data=payload)
-
+                    
                 # 특정 사용자의 누적벌점 & 방지턱 과속 누적벌점 put으로 수정
-                time.sleep(10)
+
                 print("warning")
+
                 a=a+1
                 print("방지턱개수: ", a)
             else:
                 print('normal')
 
-    time.sleep(5)
-
+    #time.sleep(10)
 
 

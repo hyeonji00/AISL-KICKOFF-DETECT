@@ -103,7 +103,7 @@ while(1) :
             # 누적벌점 : 8번, 급정거 누적벌점 : 9번
 
             # 3번 사용자의 정보만 가져오기
-            if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kickoff@email.com"):
+            if (response.json()["m2m:cin"]["con"].split(" ")[0] == "kick@email.com"):
                 print("3번 사용자")
 
                 penalty = str(int(response.json()["m2m:cin"]["con"].split(" ")[8]) + 1)
